@@ -1,0 +1,5 @@
+# Real credentials and IDs; commit location.env.example instead
+location.env
+
+# hurl --report-html output
+report/
