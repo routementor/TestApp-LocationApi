@@ -50,6 +50,17 @@ cp location.env.example location.env    # then fill in api_key, the IDs and the 
 | `company_id`, `trip_id`, `user_id`, `driver_id` | IDs used in the requests. The defaults are placeholder `1`s; use real IDs (ideally a test company, trip and driver) for meaningful results. |
 | `fms_email`, `fms_password` | FMS web app login, used only by `basic.hurl`. |
 | `error_format` | `long` (default) or `short`. A `run.sh` setting, passed to hurl as `--error-format`; see [Running the tests](#running-the-tests). |
+| `cacert` | For an `https` `base_url` with a locally generated certificate: path to the server certificate (self-signed) or the local CA root (for mkcert, `$(mkcert -CAROOT)/rootCA.pem`). A `run.sh` setting, passed to hurl as `--cacert`. Empty (default) uses the system trust store. |
+| `insecure` | `true` skips certificate verification (`--insecure`); use it only against a local server. Default `false`. |
+
+To get a self-signed certificate from a running server:
+
+```bash
+openssl s_client -connect localhost:443 -servername localhost </dev/null 2>/dev/null | openssl x509 > local-server.crt
+```
+
+The host in `base_url` must match the certificate's subject alternative name (check with
+`openssl x509 -in local-server.crt -noout -ext subjectAltName`), or hurl rejects it even with `cacert` set.
 
 `run.sh` also sets three time variables on every run: `now_epoch`, `since_epoch` (30 minutes ago) and
 `today` (an IST date).
